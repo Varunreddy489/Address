@@ -153,46 +153,12 @@ class AddressBookMain:
             self.display_contact(contact)
 
     def search_contacts_by_city(self):
-        """Handle the contact search by city workflow"""
-
-        ab_name = input("Enter Address Book Name to search: ").strip()
-        if ab_name not in self.address_books:
-            print(f"Address book '{ab_name}' not found.")
-            return
-
-        city = input("Enter city to search: ").strip()
-        search_results = SearchContacts(
-            self.address_books[ab_name]
-        ).search_all_address_books(city)
-
-        if not search_results:
-            print("No contacts found.")
-            return
-
-        print("\nSearch Results:")
-        for contact in search_results:
-            self.display_contact(contact)
+        """Delegate city search to SearchContacts"""
+        SearchContacts(self.address_books).search_by_city()
 
     def search_contacts_by_state(self):
-        """Handle the contact search by state workflow"""
-
-        ab_name = input("Enter Address Book Name to search: ").strip()
-        if ab_name not in self.address_books:
-            print(f"Address book '{ab_name}' not found.")
-            return
-
-        state = input("Enter state to search: ").strip()
-        search_results = SearchContacts(
-            self.address_books[ab_name]
-        ).search_all_address_books(state)
-
-        if not search_results:
-            print("No contacts found.")
-            return
-
-        print("\nSearch Results:")
-        for contact in search_results:
-            self.display_contact(contact)
+        """Delegate state search to SearchContacts"""
+        SearchContacts(self.address_books).search_by_state()
 
     def menu(self):
         """Main menu handler"""
