@@ -1,141 +1,164 @@
 from AddressBook import AddressBook
+from typing import Dict
 
 
 class AddressBookMain:
+    address_books: Dict[str, AddressBook] = {}
+
     @staticmethod
     def start():
         print("\nWelcome to the Address Book Program!")
-        AddressBookMain.address_books = {}
+
+    def get_address_book(self, name: str) -> AddressBook:
+        """Get or create an address book by name"""
+        name = name.strip()
+        if name not in self.address_books:
+            self.address_books[name] = AddressBook(name)
+        return self.address_books[name]
+
+    def get_contact_details(self) -> dict:
+        """Prompt user for contact details"""
+        print("\nEnter contact details:")
+        return {
+            "first_name": input("First name: ").strip(),
+            "last_name": input("Last name: ").strip(),
+            "email": input("Email: ").strip(),
+            "phone_number": input("Phone number: ").strip(),
+            "address": input("Address: ").strip(),
+            "city": input("City: ").strip(),
+            "state": input("State: ").strip(),
+            "zip_code": input("Zip Code: ").strip(),
+        }
+
+    def display_contact(self, contact):
+        """Display a single contact's details"""
+        print(f"\nName: {contact.first_name} {contact.last_name}")
+        print(f"Email: {contact.email}")
+        print(f"Phone: {contact.phone_number}")
+        print(
+            f"Address: {contact.address}, {contact.city}, {contact.state} {contact.zip_code}"
+        )
+
+    def add_contact_flow(self):
+        """Handle the contact addition workflow"""
+        ab_name = input("\nPlease Enter Address Book Name: ").strip()
+        ab = self._get_address_book(ab_name)
+
+        while True:
+            try:
+                details = self._get_contact_details()
+                ab.add_contact(**details)
+                print("Contact added successfully!")
+            except ValueError as e:
+                print(f"Error: {e}")
+
+            if input("Add another contact? (yes/no): ") != "y":
+                break
+
+        print(f"\nAll contacts in '{ab_name}':")
+        for contact in ab.contacts:
+            print(f"- {contact.first_name} {contact.last_name}")
+
+    def display_contacts_flow(self):
+        """Handle the contact display workflow"""
+        ab_name = input("Enter Address Book Name to display: ").strip()
+        if ab_name in self.address_books:
+            ab = self.address_books[ab_name]
+            if not ab.contacts:
+                print("\nNo contacts found in this address book.")
+                return
+
+            print(f"\nContacts in {ab_name}:")
+            for contact in ab.contacts:
+                self._display_contact(contact)
+        else:
+            print(f"Address book '{ab_name}' not found.")
+
+    def edit_contact_flow(self):
+        """Handle the contact editing workflow"""
+        ab_name = input("Enter Address Book Name: ").strip()
+        if ab_name not in self.address_books:
+            print(f"Address book '{ab_name}' not found.")
+            return
+
+        ab = self.address_books[ab_name]
+        first_name = input("\nEnter first name of contact to edit: ").strip()
+        last_name = input("Enter last name of contact to edit: ").strip()
+
+        contact = ab.find_contact(first_name, last_name)
+        if not contact:
+            print(f"Contact '{first_name} {last_name}' not found.")
+            return
+
+        self._display_contact(contact)
+        field = input("\nEnter field to edit: ").strip()
+        new_value = input(f"Enter new value for {field}: ").strip()
+
+        try:
+            ab.edit_contact(first_name, last_name, field, new_value)
+            print("Contact updated successfully.")
+        except ValueError as e:
+            print(f"Error: {e}")
+
+    def delete_contact_flow(self):
+        """Handle the contact deletion workflow"""
+        ab_name = input("Enter Address Book Name: ").strip()
+        if ab_name not in self.address_books:
+            print(f"Address book '{ab_name}' not found.")
+            return
+
+        ab = self.address_books[ab_name]
+        first_name = input("Enter first name of contact to delete: ").strip()
+        last_name = input("Enter last name of contact to delete: ").strip()
+
+        contact = ab.find_contact(first_name, last_name)
+        if contact:
+            ab.contacts.remove(contact)
+            print("Contact deleted successfully.")
+        else:
+            print("Contact not found.")
+
+    def add_address_books(self):
+        """Handle the address book addition workflow"""
+
+        while True:
+            ab_name = input("Enter new Address Book name: ")
+            if ab_name in self.address_books:
+                print(f"Address book '{ab_name}' already exists.")
+            else:
+                self.address_books[ab_name] = AddressBook(ab_name)
+                print(f"Address book '{ab_name}' created successfully.")
+
+            if input("Add another Address Book? (yes/no): ") != "y":
+                break
 
     def menu(self):
-        print(
-            "\nMenu:\n1. Add new Contact\n2. Display Contacts\n3. Edit Contact\n4. Delete Contact\n5. Exit"
-        )
-        try:
-            option = int(input("Enter option: "))
-            match option:
-                case 1:
-                    address_book_name = input(
-                        "\nPlease Enter Address Book Name: "
-                    ).strip()
-                    if address_book_name not in AddressBookMain.address_books:
-                        AddressBookMain.address_books[address_book_name] = AddressBook(
-                            address_book_name
-                        )
-                    ab = AddressBookMain.address_books[address_book_name]
+        """Main menu handler"""
+        options = {
+            1: ("Add new Contact", self.add_contact_flow),
+            2: ("Display Contacts", self.display_contacts_flow),
+            3: ("Edit Contact", self.edit_contact_flow),
+            4: ("Delete Contact", self.delete_contact_flow),
+            5: ("Add Address Books", self.add_address_books),
+            6: ("Exit", exit),
+        }
 
-                    while True:
-                        details = {}
-                        print("\nEnter contact details:")
-                        details["first_name"] = input("First name: ").strip()
-                        details["last_name"] = input("Last name: ").strip()
-                        details["email"] = input("Email: ").strip()
-                        details["phone_number"] = input("Phone number: ").strip()
-                        details["address"] = input("Address: ").strip()
-                        details["city"] = input("City: ").strip()
-                        details["state"] = input("State: ").strip()
-                        details["zip_code"] = input("Zip Code: ").strip()
+        while True:
+            print("\nMenu:")
+            for num, (text, _) in options.items():
+                print(f"{num}. {text}")
 
-                        try:
-                            ab.add_contact(**details)
-                        except ValueError as e:
-                            print(e)
-
-                        cont = (
-                            input(
-                                "Do you want to add another contact to this address book? (yes/no): "
-                            )
-                            .strip()
-                            .lower()
-                        )
-                        if cont != "yes":
-                            break
-
-                    print(f"\nAll contacts in '{address_book_name}':")
-                    for contact in ab.contacts:
-                        print(f"- {contact.first_name} {contact.last_name}")
-
-                case 2:
-                    address_book_name = input(
-                        "Enter Address Book Name to display: "
-                    ).strip()
-                    if address_book_name in AddressBookMain.address_books:
-                        ab = AddressBookMain.address_books[address_book_name]
-                        print(f"\nContacts in {address_book_name}:")
-                        for contact in ab.contacts:
-                            print(f"\nName: {contact.first_name} {contact.last_name}")
-                            print(f"Email: {contact.email}")
-                            print(f"Phone: {contact.phone_number}")
-                            print(
-                                f"Address: {contact.address}, {contact.city}, {contact.state} {contact.zip_code}"
-                            )
-                    else:
-                        print(f"Address book '{address_book_name}' not found.")
-
-                case 3:
-                    address_book_name = input("Enter Address Book Name: ").strip()
-                    if address_book_name in AddressBookMain.address_books:
-                        ab = AddressBookMain.address_books[address_book_name]
-                        first_name = input(
-                            "\nEnter the first name of the contact to edit: "
-                        ).strip()
-                        last_name = input(
-                            "Enter the last name of the contact to edit: "
-                        ).strip()
-
-                        print(f"\nAvailable contacts in {address_book_name}:")
-                        for contact in ab.contacts:
-                            print(f"- {contact.first_name} {contact.last_name}")
-
-                        contact = ab.find_contact(first_name, last_name)
-                        if contact:
-                            print(f"\nCurrent details for {first_name} {last_name}:")
-                            print(f"Email: {contact.email}")
-                            print(f"Phone: {contact.phone_number}")
-                            print(
-                                f"Address: {contact.address}, {contact.city}, {contact.state} {contact.zip_code}"
-                            )
-
-                            field = input(
-                                "\nEnter the field to edit (e.g., phone_number, address, city, email): "
-                            ).strip()
-                            new_value = input(f"Enter new value for {field}: ").strip()
-                            ab.edit_contact(first_name, last_name, field, new_value)
-                            print("Contact updated successfully.")
-                        else:
-                            print(
-                                f"Contact '{first_name} {last_name}' not found in this address book."
-                            )
-                    else:
-                        print(f"Address book '{address_book_name}' not found.")
-
-                case 4:
-                    address_book_name = input("Enter Address Book Name: ").strip()
-                    if address_book_name in AddressBookMain.address_books:
-                        ab = AddressBookMain.address_books[address_book_name]
-                        first_name = input(
-                            "Enter first name of contact to delete: "
-                        ).strip()
-                        last_name = input(
-                            "Enter last name of contact to delete: "
-                        ).strip()
-                        contact = ab.find_contact(first_name, last_name)
-                        if contact:
-                            ab.contacts.remove(contact)
-                            print("Contact deleted successfully.")
-                        else:
-                            print("Contact not found.")
-                    else:
-                        print(f"Address book '{address_book_name}' not found.")
-
-                case 5:
-                    exit()
-        except ValueError:
-            print("\nInvalid option. Please try again.")
+            try:
+                option = int(input("Enter option: "))
+                if option in options:
+                    options[option][1]()
+                else:
+                    print("Invalid option. Please try again.")
+            except ValueError:
+                print("Please enter a valid number.")
 
 
 if __name__ == "__main__":
     app = AddressBookMain()
     app.start()
-    while True:
-        app.menu()
+    app.menu()
