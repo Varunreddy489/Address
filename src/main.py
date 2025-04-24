@@ -15,34 +15,45 @@ class AddressBookMain:
             option = int(input("Enter option: "))
             match option:
                 case 1:
-                    details = {}
-                    print("\nEnter contact details:")
-                    details["first_name"] = input("First name: ").strip()
-                    details["last_name"] = input("Last name: ").strip()
-                    details["email"] = input("Email: ").strip()
-                    details["phone_number"] = input("Phone number: ").strip()
-                    details["address"] = input("Address: ").strip()
-                    details["city"] = input("City: ").strip()
-                    details["state"] = input("State: ").strip()
-                    details["zip_code"] = input("Zip Code: ").strip()
-
                     address_book_name = input(
                         "\nPlease Enter Address Book Name: "
                     ).strip()
-                    try:
-                        if address_book_name not in AddressBookMain.address_books:
-                            AddressBookMain.address_books[address_book_name] = (
-                                AddressBook(address_book_name)
-                            )
-                        ab = AddressBookMain.address_books[address_book_name]
+                    if address_book_name not in AddressBookMain.address_books:
+                        AddressBookMain.address_books[address_book_name] = AddressBook(
+                            address_book_name
+                        )
+                    ab = AddressBookMain.address_books[address_book_name]
 
-                        ab.add_contact(**details)
-                        print("Contact added successfully.")
-                        print(f"Current contacts in {address_book_name}:")
-                        for contact in ab.contacts:
-                            print(f"{contact.first_name} {contact.last_name}")
-                    except ValueError as e:
-                        print(e)
+                    while True:
+                        details = {}
+                        print("\nEnter contact details:")
+                        details["first_name"] = input("First name: ").strip()
+                        details["last_name"] = input("Last name: ").strip()
+                        details["email"] = input("Email: ").strip()
+                        details["phone_number"] = input("Phone number: ").strip()
+                        details["address"] = input("Address: ").strip()
+                        details["city"] = input("City: ").strip()
+                        details["state"] = input("State: ").strip()
+                        details["zip_code"] = input("Zip Code: ").strip()
+
+                        try:
+                            ab.add_contact(**details)
+                        except ValueError as e:
+                            print(e)
+
+                        cont = (
+                            input(
+                                "Do you want to add another contact to this address book? (yes/no): "
+                            )
+                            .strip()
+                            .lower()
+                        )
+                        if cont != "yes":
+                            break
+
+                    print(f"\nAll contacts in '{address_book_name}':")
+                    for contact in ab.contacts:
+                        print(f"- {contact.first_name} {contact.last_name}")
 
                 case 2:
                     address_book_name = input(
