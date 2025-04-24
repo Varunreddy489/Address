@@ -1,5 +1,5 @@
-from utils.utils import validate_contact
 from Contact import Contact
+from utils.utils import validate_contact
 
 
 class AddressBook:
@@ -16,9 +16,24 @@ class AddressBook:
             kwargs["address"],
             kwargs["city"],
             kwargs["state"],
-            kwargs["zip"],
+            kwargs["zip_code"],
             kwargs["email"],
         )
         self.contacts.append(contact)
 
         print("Contact added successfully.")
+
+    def find_contact(self, first_name, last_name):
+        for contact in self.contacts:
+            if contact.first_name == first_name and contact.last_name == last_name:
+                return contact
+        return None
+
+    def edit_contact(self, first_name, last_name, field, new_value):
+        contact = self.find_contact(first_name, last_name)
+        if not contact:
+            raise ValueError("Contact not found.")
+        if not hasattr(contact, field):
+            raise ValueError("Invalid field name.")
+        setattr(contact, field, new_value)
+        print(f"{field} updated successfully.")
