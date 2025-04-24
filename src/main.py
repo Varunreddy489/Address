@@ -152,6 +152,48 @@ class AddressBookMain:
         for contact in search_results:
             self.display_contact(contact)
 
+    def search_contacts_by_city(self):
+        """Handle the contact search by city workflow"""
+
+        ab_name = input("Enter Address Book Name to search: ").strip()
+        if ab_name not in self.address_books:
+            print(f"Address book '{ab_name}' not found.")
+            return
+
+        city = input("Enter city to search: ").strip()
+        search_results = SearchContacts(
+            self.address_books[ab_name]
+        ).search_all_address_books(city)
+
+        if not search_results:
+            print("No contacts found.")
+            return
+
+        print("\nSearch Results:")
+        for contact in search_results:
+            self.display_contact(contact)
+
+    def search_contacts_by_state(self):
+        """Handle the contact search by state workflow"""
+
+        ab_name = input("Enter Address Book Name to search: ").strip()
+        if ab_name not in self.address_books:
+            print(f"Address book '{ab_name}' not found.")
+            return
+
+        state = input("Enter state to search: ").strip()
+        search_results = SearchContacts(
+            self.address_books[ab_name]
+        ).search_all_address_books(state)
+
+        if not search_results:
+            print("No contacts found.")
+            return
+
+        print("\nSearch Results:")
+        for contact in search_results:
+            self.display_contact(contact)
+
     def menu(self):
         """Main menu handler"""
         options = {
@@ -162,6 +204,8 @@ class AddressBookMain:
             4: ("Delete Contact", self.delete_contact),
             5: ("Add Address Books", self.add_address_books),
             6: ("Search Contacts", self.search_contacts),
+            7: ("Search Contacts By City", self.search_contacts_by_city),
+            8: ("Search Contacts By State ", self.search_contacts_by_state),
         }
 
         while True:

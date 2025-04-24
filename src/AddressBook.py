@@ -6,6 +6,8 @@ class AddressBook:
     def __init__(self, address_book_name):
         self.address_book_name = address_book_name
         self.contacts = []
+        self.people_in_city = {}
+        self.people_in_state = {}
 
     def is_duplicate(self, first_name, last_name):
         for contact in self.contacts:
@@ -31,6 +33,8 @@ class AddressBook:
             kwargs["email"],
         )
         self.contacts.append(contact)
+        self.people_in_city[contact.city] = contact
+        self.people_in_state[contact.state] = contact
 
         print("Contact added successfully.")
 
