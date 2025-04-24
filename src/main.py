@@ -39,7 +39,7 @@ class AddressBookMain:
             f"Address: {contact.address}, {contact.city}, {contact.state} {contact.zip_code}"
         )
 
-    def add_contact_flow(self):
+    def add_contact(self):
         """Handle the contact addition workflow"""
         ab_name = input("\nPlease Enter Address Book Name: ").strip()
         ab = self._get_address_book(ab_name)
@@ -59,7 +59,7 @@ class AddressBookMain:
         for contact in ab.contacts:
             print(f"- {contact.first_name} {contact.last_name}")
 
-    def display_contacts_flow(self):
+    def display_contacts(self):
         """Handle the contact display workflow"""
         ab_name = input("Enter Address Book Name to display: ").strip()
         if ab_name in self.address_books:
@@ -74,7 +74,7 @@ class AddressBookMain:
         else:
             print(f"Address book '{ab_name}' not found.")
 
-    def edit_contact_flow(self):
+    def edit_contact(self):
         """Handle the contact editing workflow"""
         ab_name = input("Enter Address Book Name: ").strip()
         if ab_name not in self.address_books:
@@ -100,7 +100,7 @@ class AddressBookMain:
         except ValueError as e:
             print(f"Error: {e}")
 
-    def delete_contact_flow(self):
+    def delete_contact(self):
         """Handle the contact deletion workflow"""
         ab_name = input("Enter Address Book Name: ").strip()
         if ab_name not in self.address_books:
@@ -135,10 +135,10 @@ class AddressBookMain:
     def menu(self):
         """Main menu handler"""
         options = {
-            1: ("Add new Contact", self.add_contact_flow),
-            2: ("Display Contacts", self.display_contacts_flow),
-            3: ("Edit Contact", self.edit_contact_flow),
-            4: ("Delete Contact", self.delete_contact_flow),
+            1: ("Add new Contact", self.add_contact),
+            2: ("Display Contacts", self.display_contacts),
+            3: ("Edit Contact", self.edit_contact),
+            4: ("Delete Contact", self.delete_contact),
             5: ("Add Address Books", self.add_address_books),
             6: ("Exit", exit),
         }
