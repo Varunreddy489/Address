@@ -60,17 +60,19 @@ class AddressBookMain:
             print(f"- {contact.first_name} {contact.last_name}")
 
     def display_contacts(self):
-        """Handle the contact display workflow"""
+        """Handle the contact display workflow with alphabetical sorting"""
         ab_name = input("Enter Address Book Name to display: ").strip()
         if ab_name in self.address_books:
             ab = self.address_books[ab_name]
             if not ab.contacts:
-                print("\nNo contacts found in this address book.")
+                print("\SnNo contacts found in this address book.")
                 return
 
-            print(f"\nContacts in {ab_name}:")
-            for contact in ab.contacts:
-                self._display_contact(contact)
+            print(f"\nContacts in {ab_name} (sorted alphabetically):")
+            for contact in sorted(
+                ab.contacts, key=lambda c: (c.first_name.lower(), c.last_name.lower())
+            ):
+                self.display_contact(contact)
         else:
             print(f"Address book '{ab_name}' not found.")
 
@@ -90,7 +92,7 @@ class AddressBookMain:
             print(f"Contact '{first_name} {last_name}' not found.")
             return
 
-        self._display_contact(contact)
+        self.display_contact(contact)
         field = input("\nEnter field to edit: ").strip()
         new_value = input(f"Enter new value for {field}: ").strip()
 
