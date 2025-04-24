@@ -29,6 +29,7 @@ class AddressBook:
                 return contact
         return None
 
+    @validate_contact
     def edit_contact(self, first_name, last_name, field, new_value):
         contact = self.find_contact(first_name, last_name)
         if not contact:
@@ -37,3 +38,10 @@ class AddressBook:
             raise ValueError("Invalid field name.")
         setattr(contact, field, new_value)
         print(f"{field} updated successfully.")
+
+    def delete_contact(self, first_name, last_name):
+        contact = self.find_contact(first_name, last_name)
+        if not contact:
+            raise ValueError("Contact not found.")
+        self.contacts.remove(contact)
+        print("Contact deleted successfully.")
