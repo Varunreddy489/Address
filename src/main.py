@@ -1,15 +1,15 @@
-import AddressBook
+from AddressBook import AddressBook
 from search_contacts import SearchContacts
 
 
-class AddressBookMain:
+class Main:
     address_books = {}
 
     @staticmethod
     def start():
         print("\nWelcome to the Address Book Program!")
 
-    def get_address_book(self, name: str) -> AddressBook:
+    def get_address_book(self, name) -> AddressBook:
         """Get or create an address book by name"""
         name = name.strip()
         if name not in self.address_books:
@@ -39,16 +39,32 @@ class AddressBookMain:
             f"Address: {contact.address}, {contact.city}, {contact.state} {contact.zip_code}"
         )
 
+    def save_contact_to_txt_file(self, contact_details, ab_name):
+        """Save contact details to a txt file"""
+        file_name = f"{ab_name}_contacts.txt"
+        with open(file_name, "a") as file:
+            file.write(f"\nContact in Address Book '{ab_name}':\n")
+            file.write(
+                f"Name: {contact_details['first_name']} {contact_details['last_name']}\n"
+            )
+            file.write(f"Email: {contact_details['email']}\n")
+            file.write(f"Phone: {contact_details['phone_number']}\n")
+            file.write(
+                f"Address: {contact_details['address']}, {contact_details['city']}, {contact_details['state']} {contact_details['zip_code']}\n"
+            )
+            file.write("-" * 50 + "\n")
+
     def add_contact(self):
         """Handle the contact addition workflow"""
         ab_name = input("\nPlease Enter Address Book Name: ").strip()
-        ab = self._get_address_book(ab_name)
+        ab = self.get_address_book(ab_name)
 
         while True:
             try:
-                details = self._get_contact_details()
+                details = self.get_contact_details()
                 ab.add_contact(**details)
                 print("Contact added successfully!")
+                self.save_contact_to_txt_file(details, ab_name)
             except ValueError as e:
                 print(f"Error: {e}")
 
@@ -65,7 +81,7 @@ class AddressBookMain:
         if ab_name in self.address_books:
             ab = self.address_books[ab_name]
             if not ab.contacts:
-                print("\SnNo contacts found in this address book.")
+                print("\n No contacts found in this address book.")
                 return
 
             print(f"\nContacts in {ab_name} (sorted alphabetically):")
@@ -237,6 +253,6 @@ class AddressBookMain:
 
 
 if __name__ == "__main__":
-    app = AddressBookMain()
+    app = Main()
     app.start()
     app.menu()
