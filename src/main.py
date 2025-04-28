@@ -153,12 +153,16 @@ class AddressBookMain:
             self.display_contact(contact)
 
     def search_contacts_by_city(self):
-        """Delegate city search to SearchContacts"""
+        """Search City to SearchContacts"""
         SearchContacts(self.address_books).search_by_city()
 
     def search_contacts_by_state(self):
-        """Delegate state search to SearchContacts"""
+        """Search State to SearchContacts"""
         SearchContacts(self.address_books).search_by_state()
+
+    def count_contacts_by_city_or_state(self):
+        """Count contacts by city or state"""
+        SearchContacts(self.address_books).count_contacts_by_city_or_state()
 
     def menu(self):
         """Main menu handler"""
@@ -171,7 +175,11 @@ class AddressBookMain:
             5: ("Add Address Books", self.add_address_books),
             6: ("Search Contacts", self.search_contacts),
             7: ("Search Contacts By City", self.search_contacts_by_city),
-            8: ("Search Contacts By State ", self.search_contacts_by_state),
+            8: ("Search Contacts By State", self.search_contacts_by_state),
+            9: (
+                "Count Contacts by City or State",
+                self.count_contacts_by_city_or_state,
+            ),
         }
 
         while True:
