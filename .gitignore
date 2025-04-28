@@ -2,5 +2,4 @@ src/__pycache__
 __pycache__
 .idea
 tests
-db
 utils/__pycache__
