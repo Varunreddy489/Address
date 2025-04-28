@@ -1,3 +1,6 @@
+import os
+import csv
+import json
 from AddressBook import AddressBook
 from search_contacts import SearchContacts
 
@@ -54,6 +57,37 @@ class Main:
             )
             file.write("-" * 50 + "\n")
 
+    def save_contact_to_csv_file(self, contact_details, ab_name):
+        """Save contact details to a CSV file"""
+        file_name = f"{ab_name}_contacts.csv"
+        file_exists = os.path.exists(file_name)
+
+        with open(file_name, "a", newline="") as file:
+            writer = csv.DictWriter(file, fieldnames=contact_details.keys())
+
+            if not file_exists:
+                writer.writeheader()
+
+            writer.writerow(contact_details)
+
+    def save_contact_to_json_file(self, contact_details, ab_name):
+        """Save contact details to a JSON file"""
+        file_name = f"{ab_name}_contacts.json"
+
+        if os.path.exists(file_name):
+            with open(file_name, "r") as file:
+                try:
+                    data = json.load(file)
+                except json.JSONDecodeError:
+                    data = []
+        else:
+            data = []
+
+        data.append(contact_details)
+
+        with open(file_name, "w") as file:
+            json.dump(data, file, indent=4)
+
     def add_contact(self):
         """Handle the contact addition workflow"""
         ab_name = input("\nPlease Enter Address Book Name: ").strip()
@@ -65,6 +99,8 @@ class Main:
                 ab.add_contact(**details)
                 print("Contact added successfully!")
                 self.save_contact_to_txt_file(details, ab_name)
+                self.save_contact_to_csv_file(details, ab_name)
+                self.save_contact_to_json_file(details, ab_name)
             except ValueError as e:
                 print(f"Error: {e}")
 
