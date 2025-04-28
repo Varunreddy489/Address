@@ -152,6 +152,14 @@ class AddressBookMain:
         for contact in search_results:
             self.display_contact(contact)
 
+    def search_contacts_by_city(self):
+        """Delegate city search to SearchContacts"""
+        SearchContacts(self.address_books).search_by_city()
+
+    def search_contacts_by_state(self):
+        """Delegate state search to SearchContacts"""
+        SearchContacts(self.address_books).search_by_state()
+
     def menu(self):
         """Main menu handler"""
         options = {
@@ -162,6 +170,8 @@ class AddressBookMain:
             4: ("Delete Contact", self.delete_contact),
             5: ("Add Address Books", self.add_address_books),
             6: ("Search Contacts", self.search_contacts),
+            7: ("Search Contacts By City", self.search_contacts_by_city),
+            8: ("Search Contacts By State ", self.search_contacts_by_state),
         }
 
         while True:
