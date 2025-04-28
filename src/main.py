@@ -5,12 +5,11 @@ class AddressBookMain:
     @staticmethod
     def start():
         print("\nWelcome to the Address Book Program!")
-        # Initialize a dictionary to keep track of address books
         AddressBookMain.address_books = {}
 
     def menu(self):
         print(
-            "\nMenu:\n1. Add new Contact\n2. Display Contacts\n3. Edit Contact\n4. Exit"
+            "\nMenu:\n1. Add new Contact\n2. Display Contacts\n3. Edit Contact\n4. Delete Contact\n5. Exit"
         )
         try:
             option = int(input("Enter option: "))
@@ -31,7 +30,6 @@ class AddressBookMain:
                         "\nPlease Enter Address Book Name: "
                     ).strip()
                     try:
-                        # Get existing address book or create new one
                         if address_book_name not in AddressBookMain.address_books:
                             AddressBookMain.address_books[address_book_name] = (
                                 AddressBook(address_book_name)
@@ -40,7 +38,6 @@ class AddressBookMain:
 
                         ab.add_contact(**details)
                         print("Contact added successfully.")
-                        # Debug print to verify contact was added
                         print(f"Current contacts in {address_book_name}:")
                         for contact in ab.contacts:
                             print(f"{contact.first_name} {contact.last_name}")
@@ -75,7 +72,6 @@ class AddressBookMain:
                             "Enter the last name of the contact to edit: "
                         ).strip()
 
-                        # Debug: Print all contacts first
                         print(f"\nAvailable contacts in {address_book_name}:")
                         for contact in ab.contacts:
                             print(f"- {contact.first_name} {contact.last_name}")
@@ -103,6 +99,25 @@ class AddressBookMain:
                         print(f"Address book '{address_book_name}' not found.")
 
                 case 4:
+                    address_book_name = input("Enter Address Book Name: ").strip()
+                    if address_book_name in AddressBookMain.address_books:
+                        ab = AddressBookMain.address_books[address_book_name]
+                        first_name = input(
+                            "Enter first name of contact to delete: "
+                        ).strip()
+                        last_name = input(
+                            "Enter last name of contact to delete: "
+                        ).strip()
+                        contact = ab.find_contact(first_name, last_name)
+                        if contact:
+                            ab.contacts.remove(contact)
+                            print("Contact deleted successfully.")
+                        else:
+                            print("Contact not found.")
+                    else:
+                        print(f"Address book '{address_book_name}' not found.")
+
+                case 5:
                     exit()
         except ValueError:
             print("\nInvalid option. Please try again.")
