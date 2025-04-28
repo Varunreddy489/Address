@@ -7,8 +7,19 @@ class AddressBook:
         self.address_book_name = address_book_name
         self.contacts = []
 
+    def is_duplicate(self, first_name, last_name):
+        for contact in self.contacts:
+            if contact.first_name == first_name and contact.last_name == last_name:
+                return True
+        return False
+
     @validate_contact
     def add_contact(self, **kwargs):
+        if self.is_duplicate(kwargs["first_name"], kwargs["last_name"]):
+            raise ValueError(
+                "Duplicate contact: This person already exists in the address book."
+            )
+
         contact = Contact(
             kwargs["first_name"],
             kwargs["last_name"],
