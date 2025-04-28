@@ -1,9 +1,9 @@
-from AddressBook import AddressBook
-from typing import Dict
+import AddressBook
+from search_contacts import SearchContacts
 
 
 class AddressBookMain:
-    address_books: Dict[str, AddressBook] = {}
+    address_books = {}
 
     @staticmethod
     def start():
@@ -132,15 +132,36 @@ class AddressBookMain:
             if input("Add another Address Book? (yes/no): ") != "y":
                 break
 
+    def search_contacts(self):
+        """Handle the contact search workflow"""
+        ab_name = input("Enter Address Book Name to search: ").strip()
+        if ab_name not in self.address_books:
+            print(f"Address book '{ab_name}' not found.")
+            return
+
+        city_or_state = input("Enter city or state to search: ").strip()
+        search_results = SearchContacts(
+            self.address_books[ab_name]
+        ).search_all_address_books(city_or_state)
+
+        if not search_results:
+            print("No contacts found.")
+            return
+
+        print("\nSearch Results:")
+        for contact in search_results:
+            self.display_contact(contact)
+
     def menu(self):
         """Main menu handler"""
         options = {
+            0: ("Exit", exit),
             1: ("Add new Contact", self.add_contact),
             2: ("Display Contacts", self.display_contacts),
             3: ("Edit Contact", self.edit_contact),
             4: ("Delete Contact", self.delete_contact),
             5: ("Add Address Books", self.add_address_books),
-            6: ("Exit", exit),
+            6: ("Search Contacts", self.search_contacts),
         }
 
         while True:
