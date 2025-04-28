@@ -166,6 +166,39 @@ class AddressBookMain:
         """Count contacts by city or state"""
         SearchContacts(self.address_books).count_contacts_by_city_or_state()
 
+    def sort_contacts_by_city_or_state_or_zip(self):
+        """Sort contacts by city or state"""
+        ab_name = input("Enter Address Book Name to display: ").strip()
+        if ab_name not in self.address_books:
+            print(f"Address book '{ab_name}' not found.")
+            return
+
+        ab = self.address_books[ab_name]
+        if not ab.contacts:
+            print("\nNo contacts found in this address book.")
+            return
+
+        print("\nSort contacts by:")
+        print("1. City")
+        print("2. State")
+        print("3. Zip Code")
+
+        sort_option = input("Enter choice (1-4): ").strip()
+
+        if sort_option == "1":
+            sorted_contacts = sorted(ab.contacts, key=lambda c: c.city.lower())
+        elif sort_option == "2":
+            sorted_contacts = sorted(ab.contacts, key=lambda c: c.state.lower())
+        elif sort_option == "3":
+            sorted_contacts = sorted(ab.contacts, key=lambda c: c.zip_code)
+        else:
+            print("Invalid choice. Showing unsorted contacts.")
+            sorted_contacts = ab.contacts
+
+        print(f"\nContacts in {ab_name} (sorted):")
+        for contact in sorted_contacts:
+            self.display_contact(contact)
+
     def menu(self):
         """Main menu handler"""
         options = {
@@ -181,6 +214,10 @@ class AddressBookMain:
             9: (
                 "Count Contacts by City or State",
                 self.count_contacts_by_city_or_state,
+            ),
+            10: (
+                "Sort Contacts by City or State",
+                self.sort_contacts_by_city_or_state_or_zip,
             ),
         }
 
