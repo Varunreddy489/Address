@@ -31,7 +31,7 @@ class SearchContacts:
 
         print("\nSearch Results:")
         for contact in search_results:
-            self._display_contact(contact)
+            self.display_contact(contact)
 
     def search_by_state(self):
         ab_name = input("Enter Address Book Name to search: ").strip()
@@ -48,7 +48,7 @@ class SearchContacts:
 
         print("\nSearch Results:")
         for contact in search_results:
-            self._display_contact(contact)
+            self.display_contact(contact)
 
     def count_contacts_by_city_or_state(self):
         option = input("Count by (1) City or (2) State? Enter 1 or 2: ").strip()
@@ -67,7 +67,7 @@ class SearchContacts:
         for location, count in count_map.items():
             print(f"{location}: {count} contact(s)")
 
-    def _display_contact(self, contact):
+    def display_contact(self, contact):
         print(f"\nName: {contact.first_name} {contact.last_name}")
         print(f"Email: {contact.email}")
         print(f"Phone: {contact.phone_number}")
