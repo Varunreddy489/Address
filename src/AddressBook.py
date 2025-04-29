@@ -1,11 +1,11 @@
-from Contact import Contact
-from utils.utils import validate_contact
+from db.db_config import connect_db
 
 
 class AddressBook:
-    def __init__(self, address_book_name):
-        self.address_book_name = address_book_name
+
+    def __init__(self,  address_book_id):
         self.contacts = []
+        self.address_book_id = address_book_id
         self.people_in_city = {}
         self.people_in_state = {}
 
@@ -15,30 +15,28 @@ class AddressBook:
                 return True
         return False
 
-    @validate_contact
-    def add_contact(self, **kwargs):
-        if self.is_duplicate(kwargs["first_name"], kwargs["last_name"]):
-            raise ValueError(
-                "Duplicate contact: This person already exists in the address book."
-            )
+    def handle_add_contact(self, contact_details: dict):
+        conn = connect_db()
+        cursor = conn.cursor()
 
-        contact = Contact(
-            kwargs["first_name"],
-            kwargs["last_name"],
-            kwargs["phone_number"],
-            kwargs["address"],
-            kwargs["city"],
-            kwargs["state"],
-            kwargs["zip_code"],
-            kwargs["email"],
+        cursor.execute(
+            "INSERT INTO contacts (address_book_id, first_name, last_name, email, phone_number, address, city, state, zip_code) "
+            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+            (
+            1,
+            contact_details["first_name"],
+            contact_details["last_name"],
+            contact_details["email"],
+            contact_details["phone_number"],
+            contact_details["address"],
+            contact_details["city"],
+            contact_details["state"],
+            contact_details["zip_code"],
+            ),
         )
-        self.contacts.append(contact)
-        self.people_in_city[contact.city] = contact
-        self.people_in_state[contact.state] = contact
-
-        
-
-        print("Contact added successfully.")
+        conn.commit()
+        cursor.close()
+        conn.close()
 
     def find_contact(self, first_name, last_name):
         for contact in self.contacts:
@@ -46,7 +44,6 @@ class AddressBook:
                 return contact
         return None
 
-    @validate_contact
     def edit_contact(self, first_name, last_name, field, new_value):
         contact = self.find_contact(first_name, last_name)
         if not contact:
