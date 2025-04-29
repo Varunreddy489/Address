@@ -3,3 +3,11 @@ __pycache__
 .idea
 tests
 utils/__pycache__
+fake_data.json
+test.py
+
+Varun_contacts.csv
+Varun_contacts.txt
+Varun_contacts.json
+
+contacts.json
